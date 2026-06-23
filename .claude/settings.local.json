@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(grep -rEn \"[א-ת]{3,}\" src/games/)",
+      "Bash(grep -vE \"^[^:]*:[0-9]+:\\\\s*//|^[^:]*:[0-9]+:\\\\s*\\\\{/\\\\*\")",
+      "Bash(where winget *)",
+      "Bash(where ffmpeg *)",
+      "Bash(winget install *)",
+      "Bash(/c/Users/user/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1.1-full_build/bin/ffmpeg.exe -version)",
+      "Bash(/c/Users/user/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1.1-full_build/bin/ffprobe.exe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 '/c/Users/user/Mordehai/Perso/spectacle Cinderella/A Cinderella Story \\(Part 1 - כתוביות בעברית\\).mp4')",
+      "Bash(/c/Users/user/AppData/Local/Microsoft/WinGet/Packages/Gyan.FFmpeg_Microsoft.Winget.Source_8wekyb3d8bbwe/ffmpeg-8.1.1-full_build/bin/ffprobe.exe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 '/c/Users/user/Mordehai/Perso/spectacle Cinderella/A Cinderella Story \\(Part 2 - כתוביות בעברית\\).mp4')",
+      "Bash(mkdir -p '/c/Users/user/Mordehai/Perso/spectacle Cinderella/decoupes')",
+      "Bash(cmd.exe *)",
+      "Bash(cp \"C:/Users/user/OneDrive - TOCNDIX/Documents/Fille Au revoir.png\" \"C:/Users/user/Mordehai/Perso/Perla_Projet/public/FilleAuRevoir.png\")",
+      "Bash(cp \"C:/Users/user/OneDrive - TOCNDIX/Documents/Fille avec Chateau.jpeg\" \"C:/Users/user/Mordehai/Perso/Perla_Projet/public/FilleChateau.jpeg\")"
+    ]
+  }
+}
