@@ -1,17 +1,68 @@
+import { useState, useRef, useLayoutEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { LogOut, User, Volume2, VolumeX, UserPlus, Gamepad2, Heart } from 'lucide-react';
+import {
+  LogOut,
+  User,
+  Volume2,
+  VolumeX,
+  UserPlus,
+  Gamepad2,
+  Heart,
+  ChevronUp,
+  ChevronDown,
+} from 'lucide-react';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useAuth } from '../../hooks/useAuth';
 import { useSound } from '../../hooks/useSound';
 import { useT } from '../../hooks/useT';
 
-// באנר גלובלי - בס"ד למעלה, כפתורי פעולה ושפה למטה-ימין.
-export default function Banner() {
+const BANNER_GRADIENT = `
+  linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.05) 40%, transparent 60%, rgba(0,0,0,0.08) 100%),
+  linear-gradient(90deg,
+    #4A148C 0%,
+    #1A237E 12%,
+    #1976D2 25%,
+    #4FC3F7 38%,
+    #FFB6D9 52%,
+    #FF69B4 65%,
+    #FF8C42 80%,
+    #FFD700 92%,
+    #FFEB3B 100%
+  )
+`;
+
+// באנר גלובלי - רספונסיבי, ניתן לקיפול כדי לפנות מקום למשחק.
+// defaultCollapsed=true → נטען מקופל (עמודי משחק) כדי לתת מקסימום מסך למשחק.
+export default function Banner({ defaultCollapsed = false }) {
   const { currentUser, logout } = useAuth();
   const { enabled: soundEnabled, toggle: toggleSound } = useSound();
   const { t, lang } = useT();
   const navigate = useNavigate();
   const isHebrew = lang === 'he';
+
+  const [collapsed, setCollapsed] = useState(defaultCollapsed);
+  const headerRef = useRef(null);
+
+  // מודדים את גובה הבאנר בפועל (רספונסיבי + מצב קיפול) ומזרימים ל-CSS var
+  // כדי שריפוד התוכן (body) תמיד יתאים - בלי ערך קבוע שמבזבז מסך במובייל.
+  useLayoutEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const setVar = () => {
+      document.documentElement.style.setProperty(
+        '--banner-h',
+        `${Math.round(el.offsetHeight) + 8}px`
+      );
+    };
+    setVar();
+    const ro = new ResizeObserver(setVar);
+    ro.observe(el);
+    window.addEventListener('resize', setVar);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', setVar);
+    };
+  }, [collapsed]);
 
   const handleLogout = () => {
     logout();
@@ -20,27 +71,116 @@ export default function Banner() {
 
   const homeLink = currentUser ? '/games' : '/';
 
+  const actionRow = (
+    <div className="flex items-center gap-1 sm:gap-1.5" dir="ltr">
+      <LanguageSwitcher />
+      <NavCircle
+        to="/register"
+        tooltip={t('nav.tooltipRegister')}
+        ariaLabel={t('nav.tooltipRegister')}
+        icon={UserPlus}
+      />
+      <NavCircle
+        to="/games"
+        tooltip={t('nav.tooltipGames')}
+        ariaLabel={t('nav.tooltipGames')}
+        icon={Gamepad2}
+      />
+      <NavCircle
+        to="/discover"
+        tooltip={t('nav.tooltipDiscover')}
+        ariaLabel={t('nav.tooltipDiscover')}
+        icon={Heart}
+      />
+      {currentUser && (
+        <>
+          <button
+            onClick={toggleSound}
+            className="p-1.5 rounded-full bg-white/95 shadow hover:bg-white transition"
+            aria-label={soundEnabled ? t('nav.soundOff') : t('nav.soundOn')}
+            title={soundEnabled ? t('nav.soundOff') : t('nav.soundOn')}
+          >
+            {soundEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
+          </button>
+          <Link
+            to="/profile"
+            className="p-1.5 rounded-full bg-white/95 shadow hover:bg-white transition"
+            aria-label={t('nav.profile')}
+            title={t('nav.profile')}
+          >
+            <User size={14} />
+          </Link>
+          <button
+            onClick={handleLogout}
+            className="p-1.5 rounded-full bg-white/95 shadow hover:bg-red-50 transition"
+            aria-label={t('nav.logout')}
+            title={t('nav.logout')}
+          >
+            <LogOut size={14} />
+          </button>
+        </>
+      )}
+      <button
+        onClick={() => setCollapsed((c) => !c)}
+        className="p-1.5 rounded-full bg-white/95 shadow hover:bg-white transition"
+        aria-label={collapsed ? t('nav.expandBanner') : t('nav.collapseBanner')}
+        title={collapsed ? t('nav.expandBanner') : t('nav.collapseBanner')}
+        aria-expanded={!collapsed}
+      >
+        {collapsed ? <ChevronDown size={14} /> : <ChevronUp size={14} />}
+      </button>
+    </div>
+  );
+
+  // ---- מצב מקופל: פס דק שמפנה מקסימום מסך למשחק ----
+  if (collapsed) {
+    return (
+      <header
+        ref={headerRef}
+        className="fixed top-0 left-0 right-0 shadow-lg z-50 border-b-2 border-pink-300/80"
+        style={{ background: BANNER_GRADIENT }}
+      >
+        <div
+          className="max-w-7xl mx-auto px-2 sm:px-4 py-1.5 flex items-center justify-between gap-2"
+          dir="ltr"
+        >
+          <Link
+            to={homeLink}
+            className="flex items-center gap-2 min-w-0 hover:opacity-90 transition-opacity"
+          >
+            <span className="shrink-0 rounded-full overflow-hidden border-2 border-white shadow w-9 h-9 sm:w-10 sm:h-10">
+              <img
+                src="/characters/shlomi.png"
+                alt=""
+                className="w-full h-full object-cover"
+                aria-hidden="true"
+              />
+            </span>
+            <span
+              className="truncate font-black text-white text-sm sm:text-base"
+              style={{
+                fontFamily: '"Heebo", "Rubik", sans-serif',
+                textShadow: '1px 1px 0 rgba(0,0,0,0.5)',
+              }}
+            >
+              {t('common.appName')}
+            </span>
+          </Link>
+          {actionRow}
+        </div>
+      </header>
+    );
+  }
+
+  // ---- מצב מלא (רספונסיבי) ----
   return (
     <header
+      ref={headerRef}
       className="fixed top-0 left-0 right-0 shadow-xl z-50 border-b-4 border-pink-300/80"
       style={{
-        background: `
-          linear-gradient(180deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.05) 40%, transparent 60%, rgba(0,0,0,0.08) 100%),
-          linear-gradient(90deg,
-            #4A148C 0%,
-            #1A237E 12%,
-            #1976D2 25%,
-            #4FC3F7 38%,
-            #FFB6D9 52%,
-            #FF69B4 65%,
-            #FF8C42 80%,
-            #FFD700 92%,
-            #FFEB3B 100%
-          )
-        `,
+        background: BANNER_GRADIENT,
         boxShadow:
           'inset 0 -4px 8px rgba(0,0,0,0.15), inset 0 2px 3px rgba(255,255,255,0.55), 0 8px 18px rgba(0,0,0,0.18)',
-        minHeight: '180px',
       }}
     >
       {/* כוכבים בחלק השמאלי-כהה (ללא שינוי) */}
@@ -67,18 +207,14 @@ export default function Banner() {
 
       {/* שורה ראשית - dir=ltr קבוע */}
       <div
-        className="min-h-[180px] max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between gap-4 relative z-10"
+        className="min-h-[120px] sm:min-h-[150px] md:min-h-[180px] max-w-7xl mx-auto px-3 sm:px-4 md:px-8 flex items-center justify-between gap-2 sm:gap-4 relative z-10"
         dir="ltr"
       >
         {/* שמאל - שלומי בעיגול גדול */}
         <Link
           to={homeLink}
-          className="hover:scale-110 transition-transform shrink-0 relative rounded-full overflow-hidden border-4 border-white shadow-xl"
-          style={{
-            background: 'linear-gradient(135deg, #FFE5F1 0%, #CFE9FF 100%)',
-            width: '140px',
-            height: '140px',
-          }}
+          className="hover:scale-110 transition-transform shrink-0 relative rounded-full overflow-hidden border-4 border-white shadow-xl w-16 h-16 sm:w-24 sm:h-24 md:w-[140px] md:h-[140px]"
+          style={{ background: 'linear-gradient(135deg, #FFE5F1 0%, #CFE9FF 100%)' }}
         >
           <img
             src="/characters/shlomi.png"
@@ -86,7 +222,7 @@ export default function Banner() {
             className="w-full h-full object-cover"
           />
           <span
-            className="absolute bottom-0 left-0 right-0 text-center text-white font-black py-0.5 text-xs md:text-sm"
+            className="absolute bottom-0 left-0 right-0 text-center text-white font-black py-0.5 text-[10px] sm:text-xs md:text-sm"
             style={{
               background: 'rgba(0,0,0,0.55)',
               fontFamily: '"Copperplate Gothic Bold", "Copperplate Gothic", "Optima", "Heebo", "Rubik", serif',
@@ -102,13 +238,13 @@ export default function Banner() {
           to={homeLink}
           className="text-center flex-1 min-w-0 hover:opacity-90 transition-opacity overflow-visible flex flex-col justify-center"
         >
-          <div className="text-2xl md:text-3xl leading-none mb-1" aria-hidden="true">🏰</div>
+          <div className="text-xl sm:text-2xl md:text-3xl leading-none mb-1" aria-hidden="true">🏰</div>
 
           <h1
             className={`leading-tight inline-block text-center ${
               isHebrew
-                ? 'text-4xl md:text-6xl lg:text-7xl xl:text-7xl'
-                : 'text-3xl md:text-5xl lg:text-6xl xl:text-7xl'
+                ? 'text-2xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-7xl'
+                : 'text-xl sm:text-3xl md:text-5xl lg:text-6xl xl:text-7xl'
             }`}
             style={{
               fontFamily:
@@ -122,7 +258,7 @@ export default function Banner() {
               WebkitBackgroundClip: 'text',
               backgroundClip: 'text',
               color: 'transparent',
-              WebkitTextStroke: isHebrew ? '5px #000' : '6px #000',
+              WebkitTextStroke: isHebrew ? '4px #000' : '5px #000',
               filter:
                 'drop-shadow(2px 3px 1px rgba(0,0,0,0.55)) drop-shadow(0 0 6px rgba(255,255,255,0.4))',
               textAlign: 'center',
@@ -133,7 +269,7 @@ export default function Banner() {
           </h1>
 
           <div
-            className="text-xs md:text-sm font-bold leading-tight mt-1"
+            className="text-[10px] sm:text-xs md:text-sm font-bold leading-tight mt-1"
             style={{
               fontFamily:
                 '"Copperplate Gothic Bold", "Copperplate Gothic", "Optima", "Heebo", "Rubik", serif',
@@ -166,12 +302,8 @@ export default function Banner() {
         {/* ימין - נעמי בעיגול גדול */}
         <Link
           to={homeLink}
-          className="hover:scale-110 transition-transform shrink-0 relative rounded-full overflow-hidden border-4 border-white shadow-xl z-20"
-          style={{
-            background: 'linear-gradient(135deg, #FFE5F1 0%, #FFC1E3 100%)',
-            width: '140px',
-            height: '140px',
-          }}
+          className="hover:scale-110 transition-transform shrink-0 relative rounded-full overflow-hidden border-4 border-white shadow-xl z-20 w-16 h-16 sm:w-24 sm:h-24 md:w-[140px] md:h-[140px]"
+          style={{ background: 'linear-gradient(135deg, #FFE5F1 0%, #FFC1E3 100%)' }}
         >
           <img
             src="/PetiteFilleFondBlanc.jpeg"
@@ -179,7 +311,7 @@ export default function Banner() {
             className="w-full h-full object-cover"
           />
           <span
-            className="absolute bottom-0 left-0 right-0 text-center text-white font-black py-0.5 text-xs md:text-sm"
+            className="absolute bottom-0 left-0 right-0 text-center text-white font-black py-0.5 text-[10px] sm:text-xs md:text-sm"
             style={{
               background: 'rgba(0,0,0,0.55)',
               fontFamily: '"Copperplate Gothic Bold", "Copperplate Gothic", "Optima", "Heebo", "Rubik", serif',
@@ -191,56 +323,8 @@ export default function Banner() {
         </Link>
       </div>
 
-      {/* שורת פעולות - בתחתית הבאנר, מקובעת לפינה הימנית עליונה (extreme right) */}
-      <div className="absolute bottom-1.5 right-2 z-30 flex items-center gap-1.5" dir="ltr">
-        <LanguageSwitcher />
-        <NavCircle
-          to="/register"
-          tooltip={t('nav.tooltipRegister')}
-          ariaLabel={t('nav.tooltipRegister')}
-          icon={UserPlus}
-        />
-        <NavCircle
-          to="/games"
-          tooltip={t('nav.tooltipGames')}
-          ariaLabel={t('nav.tooltipGames')}
-          icon={Gamepad2}
-        />
-        <NavCircle
-          to="/discover"
-          tooltip={t('nav.tooltipDiscover')}
-          ariaLabel={t('nav.tooltipDiscover')}
-          icon={Heart}
-        />
-        {currentUser && (
-          <>
-            <button
-              onClick={toggleSound}
-              className="p-1.5 rounded-full bg-white/95 shadow hover:bg-white transition"
-              aria-label={soundEnabled ? t('nav.soundOff') : t('nav.soundOn')}
-              title={soundEnabled ? t('nav.soundOff') : t('nav.soundOn')}
-            >
-              {soundEnabled ? <Volume2 size={14} /> : <VolumeX size={14} />}
-            </button>
-            <Link
-              to="/profile"
-              className="p-1.5 rounded-full bg-white/95 shadow hover:bg-white transition"
-              aria-label={t('nav.profile')}
-              title={t('nav.profile')}
-            >
-              <User size={14} />
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="p-1.5 rounded-full bg-white/95 shadow hover:bg-red-50 transition"
-              aria-label={t('nav.logout')}
-              title={t('nav.logout')}
-            >
-              <LogOut size={14} />
-            </button>
-          </>
-        )}
-      </div>
+      {/* שורת פעולות - בתחתית הבאנר, מקובעת לפינה הימנית */}
+      <div className="absolute bottom-1.5 right-2 z-30">{actionRow}</div>
     </header>
   );
 }

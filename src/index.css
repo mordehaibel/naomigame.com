@@ -43,8 +43,13 @@ body {
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
-  /* Banner ~ 180px (taller with bottom action row); content sits well below */
-  padding-top: 220px;
+}
+
+/* Le padding qui dégage le Banner fixe est porté par #root (border-box) et non par body,
+   pour qu'il soit INCLUS dans la hauteur 100vh de #root → pas de +hauteur-bannière parasite
+   qui forcerait un scroll. Hauteur réelle du Banner mesurée en JS (Banner.jsx) via --banner-h. */
+#root {
+  padding-top: var(--banner-h, 180px);
 }
 
 @layer components {

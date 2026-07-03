@@ -244,8 +244,15 @@ export default function PacmanGame() {
         )}
       </div>
 
-      <div className="relative bg-slate-900 p-2 rounded-2xl shadow-2xl">
-        <svg width={COLS * CELL} height={ROWS * CELL} style={{ display: 'block' }}>
+      <div
+        className="relative bg-slate-900 p-2 rounded-2xl shadow-2xl mx-auto w-full max-w-[360px]"
+        style={{ width: 'min(100%, calc((100dvh - 425px) * 10 / 11), 360px)' }}
+      >
+        <svg
+          viewBox={`0 0 ${COLS * CELL} ${ROWS * CELL}`}
+          preserveAspectRatio="xMidYMid meet"
+          className="block w-full h-auto"
+        >
           {board.map((row, y) =>
             row.map((c, x) => (
               <g key={`${x}-${y}`}>

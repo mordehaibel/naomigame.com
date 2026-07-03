@@ -80,8 +80,7 @@ function Medal({ entry, idx, gameName, gameEmoji, t }) {
       initial={{ opacity: 0, y: -20, scale: 0.5 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ delay: 0.2 + idx * 0.15, type: 'spring', stiffness: 200 }}
-      className="relative flex flex-col items-center"
-      style={{ width: '140px' }}
+      className="relative flex flex-col items-center w-28 sm:w-[140px]"
     >
       <svg
         viewBox="0 0 140 180"

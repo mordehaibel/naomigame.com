@@ -207,8 +207,12 @@ export default function SnakeGame() {
           </div>
 
           <div
-            className="game-board relative"
-            style={{ width: GRID * CELL, height: GRID * CELL, maxWidth: '100%' }}
+            className="game-board relative mx-auto"
+            style={{
+              width: `min(100%, ${GRID * CELL}px, calc(100dvh - 250px))`,
+              aspectRatio: '1 / 1',
+              maxWidth: '100%',
+            }}
           >
             <svg width="100%" height="100%" viewBox={`0 0 ${GRID * CELL} ${GRID * CELL}`} style={{ display: 'block' }}>
               <defs>

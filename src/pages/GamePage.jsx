@@ -86,13 +86,15 @@ export default function GamePage() {
   const GameComponent = BUILT_GAMES[game.id];
 
   return (
-    <div className="min-h-screen">
-      <Banner />
-      <main className="container mx-auto px-4 py-6">
+    // hauteur = écran − bannière (repliée) → l'écran de jeu tient sans scroll
+    <div style={{ minHeight: 'calc(100dvh - var(--banner-h, 60px))' }}>
+      {/* Bannière repliée par défaut sur une page de jeu → max de place à l'écran du jeu */}
+      <Banner defaultCollapsed />
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between mb-6 flex-wrap gap-3"
+          className="flex items-center justify-between mb-4 sm:mb-6 flex-wrap gap-3"
         >
           <div className="flex items-center gap-3">
             <div className="text-4xl">{game.emoji}</div>
@@ -111,7 +113,7 @@ export default function GamePage() {
         </motion.div>
 
         <div
-          className="card-modern p-4 md:p-6 min-h-[60vh] relative overflow-hidden"
+          className="card-modern p-2 sm:p-4 md:p-6 min-h-[60vh] relative overflow-hidden"
           style={{
             background:
               'radial-gradient(circle at 10% 0%, rgba(255, 200, 230, 0.5), transparent 50%), radial-gradient(circle at 90% 100%, rgba(180, 220, 255, 0.5), transparent 55%), linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,250,253,0.95) 100%)',

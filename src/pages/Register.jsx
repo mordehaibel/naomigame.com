@@ -76,12 +76,12 @@ export default function Register() {
               <img
                 src="/PortraitGarcon10ans.jpeg"
                 alt="Chlomi"
-                className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-white shadow-xl"
+                className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-white shadow-xl"
               />
               <img
                 src="/PortraitFille10ans.png"
                 alt="Naomie"
-                className="w-32 h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-white shadow-xl"
+                className="w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-white shadow-xl"
               />
             </div>
             <h1 className="text-3xl md:text-4xl font-black mb-3 text-shadow-fun bg-gradient-to-l from-primary to-accent-purple bg-clip-text text-transparent">

@@ -47,6 +47,8 @@ const he = {
     tooltipRegister: 'הרשמה',
     tooltipGames: 'המשחקים',
     tooltipDiscover: 'החיים של שלומי ונעמי',
+    expandBanner: 'הרחב באנר',
+    collapseBanner: 'כווץ באנר',
   },
 
   // דף הבית

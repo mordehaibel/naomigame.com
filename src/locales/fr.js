@@ -45,6 +45,8 @@ const fr = {
     tooltipRegister: 'Inscription',
     tooltipGames: 'Les jeux',
     tooltipDiscover: 'La vie de Chlomi et Naomie',
+    expandBanner: 'Agrandir la bannière',
+    collapseBanner: 'Replier la bannière',
   },
 
   landing: {

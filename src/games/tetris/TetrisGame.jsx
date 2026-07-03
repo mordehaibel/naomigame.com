@@ -245,9 +245,16 @@ export default function TetrisGame() {
         </div>
       </div>
 
-      <div className="flex gap-3 items-start">
-        <div className="game-board p-2" style={{ width: COLS * CELL + 16, height: ROWS * CELL + 16 }}>
-          <svg width={COLS * CELL} height={ROWS * CELL}>
+      <div className="flex flex-col sm:flex-row gap-3 items-center sm:items-start justify-center w-full">
+        <div
+          className="game-board p-2 mx-auto w-full max-w-[260px]"
+          style={{ width: 'min(100%, calc((100dvh - 465px) * 10 / 20), 260px)' }}
+        >
+          <svg
+            viewBox={`0 0 ${COLS * CELL} ${ROWS * CELL}`}
+            preserveAspectRatio="xMidYMid meet"
+            className="block w-full h-auto"
+          >
             {display.map((row, y) =>
               row.map((c, x) => (
                 <g key={`${x}-${y}`}>
@@ -260,7 +267,7 @@ export default function TetrisGame() {
         </div>
 
         {/* פאנל "הבא" */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-row sm:flex-col gap-2 items-center">
           <div className="bg-slate-800 text-white p-2 rounded-xl text-xs text-center">
             <div className="font-bold mb-1">{t('games.tetris.next')}</div>
             <svg width={nextPiece.shape[0].length * 20} height={nextPiece.shape.length * 20}>
