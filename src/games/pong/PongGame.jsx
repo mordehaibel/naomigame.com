@@ -243,7 +243,10 @@ export default function PongGame() {
         )}
       </div>
 
-      <div className="relative w-full max-w-2xl">
+      <div
+        className="relative w-full mx-auto"
+        style={{ maxWidth: `min(100%, calc((100dvh - var(--game-reserve-nc, 205px)) * ${W} / ${H}))` }}
+      >
         <canvas
           ref={canvasRef}
           className="w-full game-board cursor-none"
