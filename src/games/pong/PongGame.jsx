@@ -225,7 +225,7 @@ export default function PongGame() {
   };
 
   return (
-    <div className="flex flex-col items-center max-w-3xl mx-auto">
+    <div className="flex flex-col items-center w-full max-w-5xl mx-auto">
       <div className="flex items-center justify-between w-full mb-4 flex-wrap gap-2">
         <div className="flex items-center gap-2 flex-wrap">
           <div className="bg-secondary/20 px-3 py-2 rounded-2xl text-sm font-bold">🤖 {t('gameUI.ai')}: {aiScore}</div>
