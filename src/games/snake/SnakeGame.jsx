@@ -209,7 +209,7 @@ export default function SnakeGame() {
           <div
             className="game-board relative mx-auto"
             style={{
-              width: `min(100%, ${GRID * CELL}px, calc(100dvh - 250px))`,
+              width: 'min(100%, calc(100dvh - var(--game-reserve, 335px) - 35px))',
               aspectRatio: '1 / 1',
               maxWidth: '100%',
             }}

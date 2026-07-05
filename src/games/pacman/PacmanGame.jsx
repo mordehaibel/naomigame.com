@@ -245,8 +245,8 @@ export default function PacmanGame() {
       </div>
 
       <div
-        className="relative bg-slate-900 p-2 rounded-2xl shadow-2xl mx-auto w-full max-w-[360px]"
-        style={{ width: 'min(100%, calc((100dvh - 425px) * 10 / 11), 360px)' }}
+        className="relative bg-slate-900 p-2 rounded-2xl shadow-2xl mx-auto w-full"
+        style={{ width: 'min(100%, calc((100dvh - var(--game-reserve, 335px)) * 10 / 11))' }}
       >
         <svg
           viewBox={`0 0 ${COLS * CELL} ${ROWS * CELL}`}

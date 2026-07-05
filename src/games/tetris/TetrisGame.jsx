@@ -247,8 +247,8 @@ export default function TetrisGame() {
 
       <div className="flex flex-col sm:flex-row gap-3 items-center sm:items-start justify-center w-full">
         <div
-          className="game-board p-2 mx-auto w-full max-w-[260px]"
-          style={{ width: 'min(100%, calc((100dvh - 465px) * 10 / 20), 260px)' }}
+          className="game-board p-2 mx-auto w-full"
+          style={{ width: 'min(100%, calc((100dvh - var(--game-reserve, 335px) - 95px) * 10 / 20))' }}
         >
           <svg
             viewBox={`0 0 ${COLS * CELL} ${ROWS * CELL}`}
