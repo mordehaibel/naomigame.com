@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Pause } from 'lucide-react';
 import Button from '../../components/common/Button';
 import GameResultModal from '../../components/games/GameResultModal';
+import GameArena from '../../components/games/GameArena';
 import DifficultySelector from '../../components/games/DifficultySelector';
 import { useAuth } from '../../hooks/useAuth';
 import { useSound } from '../../hooks/useSound';
@@ -175,9 +176,10 @@ export default function SnakeGame() {
           }}
         />
       ) : (
-        <>
-          <div className="flex items-center justify-between w-full max-w-lg mb-4 flex-wrap gap-2">
-            <div className="flex items-center gap-3">
+        <div className="w-full max-w-5xl mx-auto">
+        <GameArena
+          stats={
+            <div className="flex items-center gap-2 flex-wrap justify-center lg:justify-start">
               <div className="bg-pink-100 px-4 py-2 rounded-2xl font-bold">
                 {t('games.snake.apple')}: <span className="text-primary">{score}</span>
               </div>
@@ -187,7 +189,9 @@ export default function SnakeGame() {
                 </div>
               )}
             </div>
-            <div className="flex items-center gap-2">
+          }
+          aside={
+            <div className="flex flex-row lg:flex-col items-center gap-2">
               {phase === 'playing' && (
                 <Button variant="ghost" size="sm" icon={Pause} onClick={() => { play('click'); setPhase('paused'); }}>
                   {t('gameUI.pause')}
@@ -204,12 +208,22 @@ export default function SnakeGame() {
                 </Button>
               )}
             </div>
-          </div>
-
+          }
+          controls={
+            <div className="grid grid-cols-3 gap-2 md:hidden w-full max-w-xs">
+              <div></div>
+              <button onClick={() => directionQueue.current.push('up')} className="bg-primary text-white p-4 rounded-2xl text-2xl active:scale-95">⬆️</button>
+              <div></div>
+              <button onClick={() => directionQueue.current.push('right')} className="bg-primary text-white p-4 rounded-2xl text-2xl active:scale-95">➡️</button>
+              <button onClick={() => directionQueue.current.push('down')} className="bg-primary text-white p-4 rounded-2xl text-2xl active:scale-95">⬇️</button>
+              <button onClick={() => directionQueue.current.push('left')} className="bg-primary text-white p-4 rounded-2xl text-2xl active:scale-95">⬅️</button>
+            </div>
+          }
+        >
           <div
             className="game-board relative mx-auto"
             style={{
-              width: 'min(100%, calc(100dvh - var(--game-reserve, 335px) - 35px))',
+              width: 'min(100%, calc(100dvh - var(--game-reserve, 335px) - 70px))',
               aspectRatio: '1 / 1',
               maxWidth: '100%',
             }}
@@ -261,16 +275,8 @@ export default function SnakeGame() {
             )}
           </div>
 
-          {/* בקרי מובייל */}
-          <div className="mt-4 grid grid-cols-3 gap-2 md:hidden">
-            <div></div>
-            <button onClick={() => directionQueue.current.push('up')} className="bg-primary text-white p-4 rounded-2xl text-2xl active:scale-95">⬆️</button>
-            <div></div>
-            <button onClick={() => directionQueue.current.push('right')} className="bg-primary text-white p-4 rounded-2xl text-2xl active:scale-95">➡️</button>
-            <button onClick={() => directionQueue.current.push('down')} className="bg-primary text-white p-4 rounded-2xl text-2xl active:scale-95">⬇️</button>
-            <button onClick={() => directionQueue.current.push('left')} className="bg-primary text-white p-4 rounded-2xl text-2xl active:scale-95">⬅️</button>
-          </div>
-        </>
+        </GameArena>
+        </div>
       )}
 
       <GameResultModal

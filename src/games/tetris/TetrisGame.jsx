@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import Button from '../../components/common/Button';
 import GameResultModal from '../../components/games/GameResultModal';
+import GameArena from '../../components/games/GameArena';
 import { useAuth } from '../../hooks/useAuth';
 import { useSound } from '../../hooks/useSound';
 import { useT } from '../../hooks/useT';
@@ -219,33 +220,62 @@ export default function TetrisGame() {
   const display = renderBoard();
   const handleStart = () => { play('click'); reset(); setRunning(true); };
 
-  return (
-    <div className="flex flex-col items-center max-w-2xl mx-auto">
-      <div className="flex items-center justify-between w-full mb-4 flex-wrap gap-2">
-        <div className="flex items-center gap-2 flex-wrap">
-          <div className="bg-pink-100 px-3 py-2 rounded-2xl text-sm font-bold">⭐ {score}</div>
-          <div className="bg-blue-100 px-3 py-2 rounded-2xl text-sm font-bold">{t('games.tetris.lines')}: {lines}</div>
-          {highScore > 0 && (
-            <div className="bg-accent-yellow/30 px-3 py-2 rounded-2xl text-sm font-bold">{t('gameUI.record')}: {highScore}</div>
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          {!running && !gameOver && (
-            <select value={level} onChange={(e) => setLevel(e.target.value)} className="px-3 py-2 rounded-2xl border-2 border-gray-200 font-semibold text-sm">
-              <option value="easy">{t('games.tetris.descEasy')}</option>
-              <option value="medium">{t('games.tetris.descMedium')}</option>
-              <option value="hard">{t('games.tetris.descHard')}</option>
-            </select>
-          )}
-          {running && (
-            <Button variant="ghost" size="sm" icon={paused ? Play : Pause} onClick={() => setPaused((p) => !p)}>
-              {paused ? t('gameUI.resume') : t('gameUI.pause')}
-            </Button>
-          )}
-        </div>
-      </div>
+  const statsPanel = (
+    <div className="flex items-center gap-2 flex-wrap justify-center lg:justify-start">
+      <div className="bg-pink-100 px-3 py-2 rounded-2xl text-sm font-bold">⭐ {score}</div>
+      <div className="bg-blue-100 px-3 py-2 rounded-2xl text-sm font-bold">{t('games.tetris.lines')}: {lines}</div>
+      {highScore > 0 && (
+        <div className="bg-accent-yellow/30 px-3 py-2 rounded-2xl text-sm font-bold">{t('gameUI.record')}: {highScore}</div>
+      )}
+    </div>
+  );
 
-      <div className="flex flex-col sm:flex-row gap-3 items-center sm:items-start justify-center w-full">
+  const asidePanel = (
+    <div className="flex flex-row lg:flex-col items-center justify-center gap-2 flex-wrap">
+      {!running && !gameOver && (
+        <select value={level} onChange={(e) => setLevel(e.target.value)} className="px-3 py-2 rounded-2xl border-2 border-gray-200 font-semibold text-sm">
+          <option value="easy">{t('games.tetris.descEasy')}</option>
+          <option value="medium">{t('games.tetris.descMedium')}</option>
+          <option value="hard">{t('games.tetris.descHard')}</option>
+        </select>
+      )}
+      {running && (
+        <Button variant="ghost" size="sm" icon={paused ? Play : Pause} onClick={() => setPaused((p) => !p)}>
+          {paused ? t('gameUI.resume') : t('gameUI.pause')}
+        </Button>
+      )}
+      <div className="bg-slate-800 text-white p-2 rounded-xl text-xs text-center">
+        <div className="font-bold mb-1">{t('games.tetris.next')}</div>
+        <svg width={nextPiece.shape[0].length * 20} height={nextPiece.shape.length * 20}>
+          {nextPiece.shape.map((row, y) => row.map((c, x) => c ? <rect key={`${x}-${y}`} x={x * 20 + 1} y={y * 20 + 1} width={18} height={18} fill={nextPiece.color} rx="2" /> : null))}
+        </svg>
+      </div>
+      {!running && !gameOver && (
+        <Button variant="primary" size="sm" icon={Play} onClick={handleStart}>{t('gameUI.start')}</Button>
+      )}
+      {gameOver && (
+        <Button variant="primary" size="sm" icon={RotateCcw} onClick={handleStart}>{t('gameUI.again')}</Button>
+      )}
+      {!running && !gameOver && (
+        <p className="hidden lg:block text-xs text-gray-500 text-center">{t('games.tetris.keyHelp')}</p>
+      )}
+    </div>
+  );
+
+  const controlsPanel = (
+    <div className="grid grid-cols-3 gap-2 md:hidden w-full max-w-xs">
+      <div></div>
+      <button onClick={tryRotate} className="bg-accent-purple text-white p-3 rounded-xl text-xl active:scale-95">↻</button>
+      <div></div>
+      <button onClick={() => tryMove(-1, 0)} className="bg-primary text-white p-3 rounded-xl text-xl active:scale-95">←</button>
+      <button onClick={drop} className="bg-primary text-white p-3 rounded-xl text-xl active:scale-95">↓</button>
+      <button onClick={() => tryMove(1, 0)} className="bg-primary text-white p-3 rounded-xl text-xl active:scale-95">→</button>
+    </div>
+  );
+
+  return (
+    <div className="w-full max-w-5xl mx-auto">
+      <GameArena stats={statsPanel} aside={asidePanel} controls={controlsPanel}>
         <div
           className="game-board p-2 mx-auto w-full"
           style={{ width: 'min(100%, calc((100dvh - var(--game-reserve, 335px) - 95px) * 10 / 20))' }}
@@ -265,37 +295,7 @@ export default function TetrisGame() {
             )}
           </svg>
         </div>
-
-        {/* פאנל "הבא" */}
-        <div className="flex flex-row sm:flex-col gap-2 items-center">
-          <div className="bg-slate-800 text-white p-2 rounded-xl text-xs text-center">
-            <div className="font-bold mb-1">{t('games.tetris.next')}</div>
-            <svg width={nextPiece.shape[0].length * 20} height={nextPiece.shape.length * 20}>
-              {nextPiece.shape.map((row, y) => row.map((c, x) => c ? <rect key={`${x}-${y}`} x={x * 20 + 1} y={y * 20 + 1} width={18} height={18} fill={nextPiece.color} rx="2" /> : null))}
-            </svg>
-          </div>
-          {!running && !gameOver && (
-            <Button variant="primary" size="sm" icon={Play} onClick={handleStart}>{t('gameUI.start')}</Button>
-          )}
-          {gameOver && (
-            <Button variant="primary" size="sm" icon={RotateCcw} onClick={handleStart}>{t('gameUI.again')}</Button>
-          )}
-        </div>
-      </div>
-
-      {/* בקרי מובייל */}
-      <div className="mt-4 grid grid-cols-3 gap-2 md:hidden w-full max-w-xs">
-        <div></div>
-        <button onClick={tryRotate} className="bg-accent-purple text-white p-3 rounded-xl text-xl active:scale-95">↻</button>
-        <div></div>
-        <button onClick={() => tryMove(-1, 0)} className="bg-primary text-white p-3 rounded-xl text-xl active:scale-95">←</button>
-        <button onClick={drop} className="bg-primary text-white p-3 rounded-xl text-xl active:scale-95">↓</button>
-        <button onClick={() => tryMove(1, 0)} className="bg-primary text-white p-3 rounded-xl text-xl active:scale-95">→</button>
-      </div>
-
-      {!running && !gameOver && (
-        <p className="mt-2 text-xs text-gray-500 text-center">{t('games.tetris.keyHelp')}</p>
-      )}
+      </GameArena>
 
       <GameResultModal
         open={gameOver && !!resultData}

@@ -62,8 +62,8 @@ body {
 }
 @media (min-width: 768px) {
   :root {
-    --game-reserve: 258px;
-    --game-reserve-nc: 215px;
+    --game-reserve: 200px;
+    --game-reserve-nc: 200px;
   }
 }
 

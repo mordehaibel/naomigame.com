@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Play } from 'lucide-react';
 import Button from '../../components/common/Button';
 import GameResultModal from '../../components/games/GameResultModal';
+import GameArena from '../../components/games/GameArena';
 import { useAuth } from '../../hooks/useAuth';
 import { useSound } from '../../hooks/useSound';
 import { useT } from '../../hooks/useT';
@@ -236,18 +237,31 @@ export default function RunnerEngine({ config }) {
   const difficulty = getDifficulty(time);
 
   return (
-    <div className="flex flex-col items-center max-w-md mx-auto">
-      {/* פס סטטיסטיקה דק למעלה */}
-      <div className="w-full mb-2 flex items-center justify-between gap-2 text-xs md:text-sm font-bold flex-wrap">
-        <div className="bg-pink-100 px-2 py-0.5 rounded-full">⭐ {score}</div>
-        <div className="bg-blue-100 px-2 py-0.5 rounded-full">⏱️ {time}{t('gameUI.secAbbr')}</div>
-        <div className="bg-accent-yellow/40 px-2 py-0.5 rounded-full">🔥 ×{getScoreMultiplier(time)}</div>
-        <div className="bg-orange-200 px-2 py-0.5 rounded-full">💨 {difficulty + 1}/4</div>
-        {highScore > 0 && (
-          <div className="bg-purple-100 px-2 py-0.5 rounded-full">🏆 {highScore}</div>
-        )}
-      </div>
-
+    <div className="w-full max-w-5xl mx-auto">
+      <GameArena
+        stats={
+          <div className="flex items-center justify-center lg:justify-start gap-2 text-xs md:text-sm font-bold flex-wrap">
+            <div className="bg-pink-100 px-2 py-0.5 rounded-full">⭐ {score}</div>
+            <div className="bg-blue-100 px-2 py-0.5 rounded-full">⏱️ {time}{t('gameUI.secAbbr')}</div>
+            <div className="bg-accent-yellow/40 px-2 py-0.5 rounded-full">🔥 ×{getScoreMultiplier(time)}</div>
+            <div className="bg-orange-200 px-2 py-0.5 rounded-full">💨 {difficulty + 1}/4</div>
+            {highScore > 0 && (
+              <div className="bg-purple-100 px-2 py-0.5 rounded-full">🏆 {highScore}</div>
+            )}
+          </div>
+        }
+        controls={
+          <div className="grid grid-cols-3 gap-2 md:hidden w-full max-w-xs">
+            <button onClick={() => moveLane(-1)} className="bg-primary text-white p-3 rounded-xl text-2xl active:scale-95">←</button>
+            {config.canJump ? (
+              <button onClick={doJump} className="bg-accent-yellow text-text-primary p-3 rounded-xl text-2xl active:scale-95 font-black">↑</button>
+            ) : (
+              <div />
+            )}
+            <button onClick={() => moveLane(1)} className="bg-primary text-white p-3 rounded-xl text-2xl active:scale-95">→</button>
+          </div>
+        }
+      >
       {/* אזור משחק - מודרני עם זוהר. רוחב מוגבל לפי גובה המסך → תמיד נכנס בלי גלילה */}
       <div
         className="relative rounded-3xl overflow-hidden touch-none select-none mx-auto"
@@ -328,31 +342,7 @@ export default function RunnerEngine({ config }) {
         )}
       </div>
 
-      {/* בקרי מובייל */}
-      <div className="mt-3 grid grid-cols-3 gap-2 md:hidden w-full max-w-xs">
-        <button
-          onClick={() => moveLane(-1)}
-          className="bg-primary text-white p-3 rounded-xl text-2xl active:scale-95"
-        >
-          ←
-        </button>
-        {config.canJump ? (
-          <button
-            onClick={doJump}
-            className="bg-accent-yellow text-text-primary p-3 rounded-xl text-2xl active:scale-95 font-black"
-          >
-            ↑
-          </button>
-        ) : (
-          <div />
-        )}
-        <button
-          onClick={() => moveLane(1)}
-          className="bg-primary text-white p-3 rounded-xl text-2xl active:scale-95"
-        >
-          →
-        </button>
-      </div>
+      </GameArena>
 
       <GameResultModal
         open={phase === 'gameOver' && !!resultData}

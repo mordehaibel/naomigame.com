@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { Play, RotateCcw } from 'lucide-react';
 import Button from '../../components/common/Button';
 import GameResultModal from '../../components/games/GameResultModal';
+import GameArena from '../../components/games/GameArena';
 import { useAuth } from '../../hooks/useAuth';
 import { useSound } from '../../hooks/useSound';
 import { useT } from '../../hooks/useT';
@@ -225,25 +226,38 @@ export default function PacmanGame() {
     setRunning(true);
   };
 
-  return (
-    <div className="flex flex-col items-center max-w-2xl mx-auto">
-      <div className="flex items-center justify-between w-full mb-4 flex-wrap gap-2">
-        <div className="flex items-center gap-2 flex-wrap">
-          <div className="bg-pink-100 px-3 py-2 rounded-2xl text-sm font-bold">⭐ {score}</div>
-          <div className="bg-blue-100 px-3 py-2 rounded-2xl text-sm font-bold">{t('games.pacman.pellets')} {pellets}/{totalPellets.current}</div>
-          {highScore > 0 && (
-            <div className="bg-accent-yellow/30 px-3 py-2 rounded-2xl text-sm font-bold">{t('gameUI.record')}: {highScore}</div>
-          )}
-        </div>
-        {!running && !done && (
-          <select value={level} onChange={(e) => setLevel(e.target.value)} className="px-3 py-2 rounded-2xl border-2 border-gray-200 font-semibold text-sm">
-            <option value="easy">{t('games.pacman.descEasy')}</option>
-            <option value="medium">{t('games.pacman.descMedium')}</option>
-            <option value="hard">{t('games.pacman.descHard')}</option>
-          </select>
-        )}
-      </div>
+  const statsPanel = (
+    <div className="flex items-center gap-2 flex-wrap justify-center lg:justify-start">
+      <div className="bg-pink-100 px-3 py-2 rounded-2xl text-sm font-bold">⭐ {score}</div>
+      <div className="bg-blue-100 px-3 py-2 rounded-2xl text-sm font-bold">{t('games.pacman.pellets')} {pellets}/{totalPellets.current}</div>
+      {highScore > 0 && (
+        <div className="bg-accent-yellow/30 px-3 py-2 rounded-2xl text-sm font-bold">{t('gameUI.record')}: {highScore}</div>
+      )}
+    </div>
+  );
 
+  const asidePanel = !running && !done ? (
+    <select value={level} onChange={(e) => setLevel(e.target.value)} className="px-3 py-2 rounded-2xl border-2 border-gray-200 font-semibold text-sm">
+      <option value="easy">{t('games.pacman.descEasy')}</option>
+      <option value="medium">{t('games.pacman.descMedium')}</option>
+      <option value="hard">{t('games.pacman.descHard')}</option>
+    </select>
+  ) : null;
+
+  const controlsPanel = (
+    <div className="grid grid-cols-3 gap-2 md:hidden w-full max-w-xs">
+      <div></div>
+      <button onClick={() => (queuedDirRef.current = 'up')} className="bg-primary text-white p-3 rounded-xl text-xl active:scale-95">⬆️</button>
+      <div></div>
+      <button onClick={() => (queuedDirRef.current = 'left')} className="bg-primary text-white p-3 rounded-xl text-xl active:scale-95">⬅️</button>
+      <button onClick={() => (queuedDirRef.current = 'down')} className="bg-primary text-white p-3 rounded-xl text-xl active:scale-95">⬇️</button>
+      <button onClick={() => (queuedDirRef.current = 'right')} className="bg-primary text-white p-3 rounded-xl text-xl active:scale-95">➡️</button>
+    </div>
+  );
+
+  return (
+    <div className="w-full max-w-5xl mx-auto">
+      <GameArena stats={statsPanel} aside={asidePanel} controls={controlsPanel}>
       <div
         className="relative bg-slate-900 p-2 rounded-2xl shadow-2xl mx-auto w-full"
         style={{ width: 'min(100%, calc((100dvh - var(--game-reserve, 335px)) * 10 / 11))' }}
@@ -295,15 +309,7 @@ export default function PacmanGame() {
         )}
       </div>
 
-      {/* בקרי מובייל */}
-      <div className="mt-4 grid grid-cols-3 gap-2 md:hidden w-full max-w-xs">
-        <div></div>
-        <button onClick={() => (queuedDirRef.current = 'up')} className="bg-primary text-white p-3 rounded-xl text-xl active:scale-95">⬆️</button>
-        <div></div>
-        <button onClick={() => (queuedDirRef.current = 'left')} className="bg-primary text-white p-3 rounded-xl text-xl active:scale-95">⬅️</button>
-        <button onClick={() => (queuedDirRef.current = 'down')} className="bg-primary text-white p-3 rounded-xl text-xl active:scale-95">⬇️</button>
-        <button onClick={() => (queuedDirRef.current = 'right')} className="bg-primary text-white p-3 rounded-xl text-xl active:scale-95">➡️</button>
-      </div>
+      </GameArena>
 
       <GameResultModal
         open={done && !!resultData}
