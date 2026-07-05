@@ -15,6 +15,7 @@ const fr = {
     save: 'Enregistrer',
     play: 'Jouer !',
     playAgain: 'Rejouer',
+    close: 'Fermer',
     start: 'Commencer !',
     pause: 'Pause',
     resume: 'Continuer',

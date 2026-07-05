@@ -16,6 +16,7 @@ const he = {
     save: 'שמור',
     play: 'שחקו!',
     playAgain: 'שחק שוב',
+    close: 'סגור',
     start: 'התחילו!',
     pause: 'השהה',
     resume: 'המשך',

@@ -1,5 +1,6 @@
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RotateCcw, Home } from 'lucide-react';
+import { RotateCcw, Home, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import CharacterDisplay from '../characters/CharacterDisplay';
 import Button from '../common/Button';
@@ -19,7 +20,15 @@ export default function GameResultModal({
 }) {
   const { currentUser } = useAuth();
   const { t } = useT();
-  if (!open || !currentUser) return null;
+  // Fermeture : état interne → l'utilisateur peut masquer la modale (X / סגור)
+  // pour revoir le plateau, sans que chaque jeu ait à gérer un onClose.
+  // Réinitialisé à chaque nouvelle fin de partie (open repasse à true).
+  const [dismissed, setDismissed] = useState(false);
+  useEffect(() => {
+    if (open) setDismissed(false);
+  }, [open]);
+
+  if (!open || dismissed || !currentUser) return null;
 
   const isMale = currentUser.gender === 'male';
   const message = newRecord
@@ -43,11 +52,23 @@ export default function GameResultModal({
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.5, y: 100 }}
           transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-          className="bg-white rounded-3xl shadow-2xl p-6 max-w-md w-full relative"
+          className="bg-white rounded-3xl shadow-2xl max-w-md w-full relative max-h-[90dvh] flex flex-col"
         >
           {/* ילדה מוחאת כפיים בפינה */}
           <ClappingGirl />
 
+          {/* Bouton de fermeture - toujours visible, cliquable */}
+          <button
+            onClick={() => setDismissed(true)}
+            aria-label={t('common.close')}
+            title={t('common.close')}
+            className="absolute top-2 right-2 z-20 p-2 rounded-full bg-white shadow-lg border border-gray-200 text-gray-600 hover:bg-gray-100 hover:scale-110 transition active:scale-95"
+          >
+            <X size={20} />
+          </button>
+
+          {/* Contenu scrollable interne → la modale tient toujours dans le viewport */}
+          <div className="overflow-y-auto p-6 pt-8">
           {/* דמות עם הפוזה המתאימה */}
           <div className="flex justify-center mb-4">
             <CharacterDisplay
@@ -113,6 +134,15 @@ export default function GameResultModal({
                 {t('results.forAllGames')}
               </Button>
             </Link>
+          </div>
+
+          {/* Fermer la modale pour revoir le plateau */}
+          <button
+            onClick={() => setDismissed(true)}
+            className="mt-3 w-full text-center text-sm font-bold text-gray-500 hover:text-gray-700 underline underline-offset-2 transition"
+          >
+            {t('common.close')}
+          </button>
           </div>
         </motion.div>
       </motion.div>
