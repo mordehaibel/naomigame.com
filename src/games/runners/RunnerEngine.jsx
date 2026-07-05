@@ -253,7 +253,7 @@ export default function RunnerEngine({ config }) {
         className="relative rounded-3xl overflow-hidden touch-none select-none mx-auto"
         style={{
           aspectRatio: '3 / 5',
-          width: 'min(100%, calc((100dvh - 342px) * 3 / 5))',
+          width: 'min(100%, calc((100dvh - var(--game-reserve, 335px)) * 3 / 5))',
           background: config.background,
           boxShadow:
             '0 25px 60px rgba(0,0,0,0.45), 0 0 0 3px rgba(255,255,255,0.85), inset 0 0 60px rgba(255,255,255,0.05), inset 0 4px 14px rgba(255,255,255,0.12)',
