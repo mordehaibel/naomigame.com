@@ -52,6 +52,21 @@ body {
   padding-top: var(--banner-h, 180px);
 }
 
+/* Réserve verticale = tout le chrome autour du plateau (bannière + en-tête + padding + stats + contrôles).
+   Le plateau de chaque jeu se dimensionne via min(100%, calc((100dvh - réserve) * ratio)) → il occupe
+   la majeure partie de la hauteur d'écran. Deux tiers : avec contrôles tactiles (mobile) vs sans.
+   Sur desktop les contrôles tactiles sont masqués → réserve bien plus petite → plateau plus grand. */
+:root {
+  --game-reserve: 335px;      /* jeux avec contrôles tactiles (mobile) */
+  --game-reserve-nc: 205px;   /* jeux sans contrôles (tap only) */
+}
+@media (min-width: 768px) {
+  :root {
+    --game-reserve: 258px;
+    --game-reserve-nc: 215px;
+  }
+}
+
 @layer components {
   .btn-primary {
     @apply px-8 py-4 bg-gradient-to-r from-primary to-accent-purple text-white font-bold text-lg rounded-3xl shadow-lg

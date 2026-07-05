@@ -90,19 +90,19 @@ export default function GamePage() {
     <div style={{ minHeight: 'calc(100dvh - var(--banner-h, 60px))' }}>
       {/* Bannière repliée par défaut sur une page de jeu → max de place à l'écran du jeu */}
       <Banner defaultCollapsed />
-      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
+      <main className="container mx-auto px-3 sm:px-4 py-3 sm:py-4">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between mb-4 sm:mb-6 flex-wrap gap-3"
+          className="flex items-center justify-between mb-2 sm:mb-3 flex-wrap gap-2"
         >
-          <div className="flex items-center gap-3">
-            <div className="text-4xl">{game.emoji}</div>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="text-3xl md:text-4xl">{game.emoji}</div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-black text-white drop-shadow-lg">
+              <h1 className="text-xl md:text-3xl font-black text-white drop-shadow-lg leading-tight">
                 {t(`games.${game.id}.name`)}
               </h1>
-              <p className="text-sm text-white/80">{game.name}</p>
+              <p className="text-xs sm:text-sm text-white/80 leading-tight">{game.name}</p>
             </div>
           </div>
           <Link to="/games">
@@ -112,14 +112,21 @@ export default function GamePage() {
           </Link>
         </motion.div>
 
+        {/* Scène de jeu : min-height = écran − bannière − en-tête → le plateau (dimensionné
+            par la hauteur de l'écran) domine le centre, centré, sans scroll ni vide. */}
         <div
-          className="card-modern p-2 sm:p-4 md:p-6 min-h-[60vh] relative overflow-hidden"
+          className="card-modern p-2 sm:p-4 md:p-5 relative overflow-hidden flex flex-col justify-center"
           style={{
+            minHeight: 'calc(100dvh - var(--banner-h, 60px) - 134px)',
             background:
               'radial-gradient(circle at 10% 0%, rgba(255, 200, 230, 0.5), transparent 50%), radial-gradient(circle at 90% 100%, rgba(180, 220, 255, 0.5), transparent 55%), linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(255,250,253,0.95) 100%)',
           }}
         >
-          {GameComponent ? <GameComponent /> : <GamePlaceholder game={game} />}
+          {/* wrapper bloc w-full : redonne aux jeux (root max-w-* mx-auto) leur pleine largeur,
+              sinon le mx-auto dans un parent flex annule le stretch et rétrécit le plateau. */}
+          <div className="w-full">
+            {GameComponent ? <GameComponent /> : <GamePlaceholder game={game} />}
+          </div>
         </div>
       </main>
     </div>
