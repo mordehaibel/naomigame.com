@@ -185,7 +185,7 @@ export default function SlidingPuzzleGame() {
       {/* לוח */}
       <div
         className="grid gap-2 bg-gradient-to-br from-teal-500 to-emerald-600 p-3 rounded-3xl shadow-2xl w-full mx-auto"
-        style={{ gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`, aspectRatio: '1', maxWidth: 'min(28rem, calc(100dvh - 410px))' }}
+        style={{ gridTemplateColumns: `repeat(${size}, minmax(0, 1fr))`, aspectRatio: '1', maxWidth: 'min(100%, calc(100dvh - 310px))' }}
       >
         {board.map((value, idx) => (
           <Tile

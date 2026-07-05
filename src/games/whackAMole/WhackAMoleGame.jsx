@@ -188,7 +188,7 @@ export default function WhackAMoleGame() {
       </div>
 
       {/* טיימר */}
-      <div className="w-full mb-6">
+      <div className="w-full mb-3">
         <div className="flex items-center justify-between mb-1">
           <span className="font-bold">⏱️ {t('gameUI.time')}: {time}{t('gameUI.secAbbr')}</span>
         </div>
@@ -207,7 +207,7 @@ export default function WhackAMoleGame() {
       <div
         className="grid grid-cols-3 gap-3 md:gap-4 w-full aspect-square p-4 rounded-3xl mx-auto"
         style={{
-          maxWidth: 'min(28rem, calc(100dvh - 490px))',
+          maxWidth: 'min(100%, calc(100dvh - 430px))',
           background:
             'radial-gradient(circle at 30% 20%, #84cc16 0%, transparent 50%), radial-gradient(circle at 70% 80%, #65a30d 0%, transparent 60%), linear-gradient(180deg, #4ade80 0%, #16a34a 50%, #15803d 100%)',
           boxShadow:

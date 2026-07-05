@@ -163,7 +163,7 @@ export default function NumberHuntGame() {
             </motion.div>
           </AnimatePresence>
 
-          <div className="grid gap-2 w-full mx-auto max-w-[min(24rem,calc(100dvh_-_300px))]" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
+          <div className="grid gap-2 w-full mx-auto max-w-[260px]" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
             {board.map((n) => (
               <motion.button
                 key={n}

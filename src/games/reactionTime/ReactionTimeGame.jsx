@@ -182,7 +182,7 @@ export default function ReactionTimeGame() {
           }
           disabled={stage === 'done'}
           className={`
-            w-full aspect-square max-w-[min(28rem,calc(100dvh_-_385px))] mx-auto rounded-3xl
+            w-full aspect-square max-w-[min(100%,calc(100dvh_-_345px))] mx-auto rounded-3xl
             flex flex-col items-center justify-center text-white p-8
             transition-all duration-300
             ${stage === 'go' ? 'animate-pulse' : ''}
